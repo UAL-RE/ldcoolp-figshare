@@ -1,8 +1,5 @@
 from figshare.figshare import issue_request
 
-# Read in default configuration file
-from ...config import config_default_dict
-
 import pandas as pd
 import numpy as np
 
@@ -98,7 +95,7 @@ class FigshareInstituteAdmin:
       See: https://docs.figshare.com/#private_article_reserve_doi
     """
 
-    def __init__(self, figshare_dict=config_default_dict['figshare'], log=None):
+    def __init__(self, figshare_dict, log=None):
         self.dict = figshare_dict
         if not self.dict['stage']:
             self.baseurl = "https://api.figshare.com/v2/account/"
