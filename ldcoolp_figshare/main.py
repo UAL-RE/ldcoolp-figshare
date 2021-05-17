@@ -1,3 +1,4 @@
+from typing import Tuple
 from requests.exceptions import HTTPError
 
 import pandas as pd
@@ -96,14 +97,14 @@ class FigshareInstituteAdmin:
 
         self.log = log
 
-    def endpoint(self, link, institute=True):
+    def endpoint(self, link: str, institute: bool = True) -> str:
         """Concatenate the endpoint to the baseurl"""
         if institute:
             return self.baseurl_institute + link
         else:
             return self.baseurl + link
 
-    def get_articles(self):
+    def get_articles(self) -> pd.DataFrame:
         """Retrieve information about articles within institutional instance"""
         url = self.endpoint("articles")
 
@@ -114,7 +115,7 @@ class FigshareInstituteAdmin:
         articles_df = pd.DataFrame(articles)
         return articles_df
 
-    def get_user_articles(self, account_id):
+    def get_user_articles(self, account_id: int) -> pd.DataFrame:
         url = self.endpoint("articles", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -124,7 +125,7 @@ class FigshareInstituteAdmin:
         user_articles_df = pd.DataFrame(user_articles)
         return user_articles_df
 
-    def get_user_projects(self, account_id):
+    def get_user_projects(self, account_id: int) -> pd.DataFrame:
         url = self.endpoint("projects", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -134,7 +135,7 @@ class FigshareInstituteAdmin:
         user_projects_df = pd.DataFrame(user_projects)
         return user_projects_df
 
-    def get_user_collections(self, account_id):
+    def get_user_collections(self, account_id: int) -> pd.DataFrame:
         url = self.endpoint("collections", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -144,7 +145,7 @@ class FigshareInstituteAdmin:
         user_collections_df = pd.DataFrame(user_collections)
         return user_collections_df
 
-    def get_groups(self):
+    def get_groups(self) -> pd.DataFrame:
         """Retrieve information about groups within institutional instance"""
         url = self.endpoint("groups")
         groups = redata_request('GET', url, self.headers)
@@ -152,7 +153,7 @@ class FigshareInstituteAdmin:
         groups_df = pd.DataFrame(groups)
         return groups_df
 
-    def get_account_list(self, ignore_admin=False):
+    def get_account_list(self, ignore_admin: bool = False) -> pd.DataFrame:
         """Retrieve accounts within institutional instance"""
         url = self.endpoint("accounts")
 
@@ -173,14 +174,15 @@ class FigshareInstituteAdmin:
             accounts_df = accounts_df.drop(drop_index).reset_index(drop=True)
         return accounts_df
 
-    def get_account_group_roles(self, account_id):
+    def get_account_group_roles(self, account_id: int) -> dict:
         """Retrieve group roles for a given account"""
         url = self.endpoint(f"roles/{account_id}")
 
         roles = redata_request('GET', url, self.headers)
         return roles
 
-    def get_account_details(self, flag=True, ignore_admin=False):
+    def get_account_details(self, flag: bool = True,
+                            ignore_admin: bool = False) -> pd.DataFrame:
         """
         Retrieve account details. This includes number of articles, projects,
         collections, group association, and administrative and reviewer flags
@@ -252,21 +254,22 @@ class FigshareInstituteAdmin:
 
         return accounts_df
 
-    def get_curation_list(self, article_id=None):
+    def get_curation_list(self, article_id: int = None) -> pd.DataFrame:
         """Retrieve list of curation"""
 
         url = self.endpoint("reviews")
 
         params = {'offset': 0, 'limit': 1000}
-        if not isinstance(article_id, type(None)):
+        if article_id is not None:
             params['article_id'] = article_id
 
-        curation_list = redata_request('GET', url, self.headers, params=params)
+        curation_list = redata_request('GET', url, self.headers,
+                                       params=params)
 
         curation_df = pd.DataFrame(curation_list)
         return curation_df
 
-    def get_curation_details(self, curation_id):
+    def get_curation_details(self, curation_id: int) -> dict:
         """Retrieve details about a specified curation item"""
 
         url = self.endpoint(f"review/{curation_id}")
@@ -275,7 +278,7 @@ class FigshareInstituteAdmin:
 
         return curation_details
 
-    def get_curation_comments(self, curation_id):
+    def get_curation_comments(self, curation_id: int) -> dict:
         """Retrieve comments about specified curation item"""
 
         url = self.endpoint(f"review/{curation_id}/comments")
@@ -284,7 +287,7 @@ class FigshareInstituteAdmin:
 
         return curation_comments
 
-    def doi_check(self, article_id):
+    def doi_check(self, article_id: int) -> Tuple[bool, str]:
         """Check if DOI is present/reserved"""
         url = self.endpoint(f"articles/{article_id}", institute=False)
 
@@ -296,7 +299,7 @@ class FigshareInstituteAdmin:
 
         return check, article_details['doi']
 
-    def reserve_doi(self, article_id):
+    def reserve_doi(self, article_id: int) -> str:
         """Reserve DOI if one has not been reserved"""
 
         url = self.endpoint(f"articles/{article_id}/reserve_doi", institute=False)
