@@ -211,19 +211,19 @@ class FigshareInstituteAdmin:
                 articles_df = self.get_user_articles(account_id)
                 num_articles[n] = articles_df.shape[0]
             except HTTPError:
-                self.log.warn(f"Unable to retrieve articles for : {account_id}")
+                self.log.warning(f"Unable to retrieve articles for : {account_id}")
 
             try:
                 projects_df = self.get_user_projects(account_id)
                 num_projects[n] = projects_df.shape[0]
             except HTTPError:
-                self.log.warn(f"Unable to retrieve projects for : {account_id}")
+                self.log.warning(f"Unable to retrieve projects for : {account_id}")
 
             try:
                 collections_df = self.get_user_collections(account_id)
                 num_collections[n] = collections_df.shape[0]
             except HTTPError:
-                self.log.warn(f"Unable to retrieve collections for : {account_id}")
+                self.log.warning(f"Unable to retrieve collections for : {account_id}")
 
             for key in roles.keys():
                 for t_dict in roles[key]:
@@ -318,5 +318,5 @@ class FigshareInstituteAdmin:
                 self.log.info(f"DOI minted : {response['doi']}")
                 return response['doi']
             else:
-                self.log.warn("Skipping... ")
+                self.log.warning("Skipping... ")
                 return doi_string
