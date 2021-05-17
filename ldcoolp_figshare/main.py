@@ -3,42 +3,26 @@ from requests.exceptions import HTTPError
 import pandas as pd
 import numpy as np
 
+from logging import Logger
 from redata.commons.logger import log_stdout
 from redata.commons.issue_request import redata_request
 
 
 class FigshareInstituteAdmin:
     """
-    Purpose:
-      A Python interface for administration of institutional Figshare accounts
+    A Python interface for administration and data curation
+    with institutional Figshare instances
 
-    :param figshare_dict: Dict that contains Figshare configuration.
+    :param figshare_dict: Contains Figshare configuration
       This should include:
-        - api_token
-        - stage bool
-
-      Default: config_default_dict from config/default.ini
-
-    Attributes
-    ----------
-    dict : dict
-      Figshare configuration dictionary
-
-    baseurl : str
-      Base URL of the Figshare v2 API
-
-    baseurl_institute : str
-      Base URL of the Figshare v2 API for private institutions
-
-    token : str
-      The Figshare OAuth2 authentication token
-
-    stage : bool
-      Set to use API endpoint of stage instead of production
-      Default: False (i.e., use production)
-
-    headers : dict
-      HTTP header information
+        - api_token: str
+        - stage: bool
+    :param log: Logger object for stdout and file logging. Default: stdout
+    :ivar dict : Dictionary that contains Figshare configuration
+    :ivar baseurl: Base URL of Figshare API
+    :ivar baseurl_institute: Base URL of Figshare API for institutions
+    :ivar token: Figshare OAuth2 authentication token
+    :ivar headers: HTTP header information
 
     Methods
     -------
@@ -96,7 +80,7 @@ class FigshareInstituteAdmin:
       See: https://docs.figshare.com/#private_article_reserve_doi
     """
 
-    def __init__(self, figshare_dict, log=None):
+    def __init__(self, figshare_dict: dict, log: Logger = log_stdout()):
         self.dict = figshare_dict
         if not self.dict['stage']:
             self.baseurl = "https://api.figshare.com/v2/account/"
@@ -110,10 +94,7 @@ class FigshareInstituteAdmin:
         if self.token:
             self.headers['Authorization'] = f'token {self.token}'
 
-        if isinstance(log, type(None)):
-            self.log = log_stdout()
-        else:
-            self.log = log
+        self.log = log
 
     def endpoint(self, link, institute=True):
         """Concatenate the endpoint to the baseurl"""
