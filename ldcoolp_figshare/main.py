@@ -200,19 +200,25 @@ class FigshareInstituteAdmin:
                 articles_df = self.get_user_articles(account_id)
                 num_articles[n] = articles_df.shape[0]
             except HTTPError:
-                self.log.warning(f"Unable to retrieve articles for : {account_id}")
+                self.log.warning(
+                    f"Unable to retrieve articles for : {account_id}"
+                )
 
             try:
                 projects_df = self.get_user_projects(account_id)
                 num_projects[n] = projects_df.shape[0]
             except HTTPError:
-                self.log.warning(f"Unable to retrieve projects for : {account_id}")
+                self.log.warning(
+                    f"Unable to retrieve projects for : {account_id}"
+                )
 
             try:
                 collections_df = self.get_user_collections(account_id)
                 num_collections[n] = collections_df.shape[0]
             except HTTPError:
-                self.log.warning(f"Unable to retrieve collections for : {account_id}")
+                self.log.warning(
+                    f"Unable to retrieve collections for : {account_id}"
+                )
 
             for key in roles.keys():
                 for t_dict in roles[key]:
@@ -301,7 +307,8 @@ class FigshareInstituteAdmin:
         See: https://docs.figshare.com/#private_article_reserve_doi
         """
 
-        url = self.endpoint(f"articles/{article_id}/reserve_doi", institute=False)
+        url = self.endpoint(f"articles/{article_id}/reserve_doi",
+                            institute=False)
 
         # Check if DOI has been reserved
         doi_check, doi_string = self.doi_check(article_id)
