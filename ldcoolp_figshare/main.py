@@ -184,9 +184,9 @@ class FigshareInstituteAdmin:
         # Retrieve groups
         groups_df = self.get_groups()
 
-        num_articles = np.zeros(n_accounts, dtype=np.int)
-        num_projects = np.zeros(n_accounts, dtype=np.int)
-        num_collections = np.zeros(n_accounts, dtype=np.int)
+        num_articles = np.zeros(n_accounts, dtype=np.intc)
+        num_projects = np.zeros(n_accounts, dtype=np.intc)
+        num_collections = np.zeros(n_accounts, dtype=np.intc)
 
         if flag:
             admin_flag = [''] * n_accounts
