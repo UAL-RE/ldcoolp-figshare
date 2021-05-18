@@ -18,12 +18,15 @@ class FigshareInstituteAdmin:
       This should include:
         - api_token: str
         - stage: bool
+    :param admin_filter: List of filters to remove admin accounts from user list
     :param log: Logger object for stdout and file logging. Default: stdout
     :ivar dict : Dictionary that contains Figshare configuration
     :ivar baseurl: Base URL of Figshare API
     :ivar baseurl_institute: Base URL of Figshare API for institutions
     :ivar token: Figshare OAuth2 authentication token
     :ivar headers: HTTP header information
+    :ivar admin_filter: List of filters to remove admin accounts from user list
+    :ivar ignore_admin: Flags whether to remove admin accounts from user list
 
     Methods
     -------
@@ -81,7 +84,9 @@ class FigshareInstituteAdmin:
       See: https://docs.figshare.com/#private_article_reserve_doi
     """
 
-    def __init__(self, figshare_dict: dict, log: Logger = log_stdout()):
+    def __init__(self, figshare_dict: dict,
+                 admin_filter: list = None,
+                 log: Logger = log_stdout()):
         self.dict = figshare_dict
         if not self.dict['stage']:
             self.baseurl = "https://api.figshare.com/v2/account/"
@@ -95,6 +100,11 @@ class FigshareInstituteAdmin:
         if self.token:
             self.headers['Authorization'] = f'token {self.token}'
 
+        self.admin_filter = admin_filter
+        if admin_filter is not None:
+            self.ignore_admin = True
+        else:
+            self.ignore_admin = False
         self.log = log
 
     def endpoint(self, link: str, institute: bool = True) -> str:
@@ -153,7 +163,7 @@ class FigshareInstituteAdmin:
         groups_df = pd.DataFrame(groups)
         return groups_df
 
-    def get_account_list(self, ignore_admin: bool = False) -> pd.DataFrame:
+    def get_account_list(self) -> pd.DataFrame:
         """Retrieve accounts within institutional instance"""
         url = self.endpoint("accounts")
 
@@ -164,12 +174,12 @@ class FigshareInstituteAdmin:
         accounts_df = pd.DataFrame(accounts)
         accounts_df = accounts_df.drop(columns='institution_id')
 
-        if ignore_admin:
+        if self.ignore_admin:
             self.log.info("Excluding administrative and test accounts")
 
-            drop_index = list(accounts_df[accounts_df['email'] ==
-                                          'data-management@email.arizona.edu'].index)
-            drop_index += list(accounts_df[accounts_df['email'].str.contains('-test@email.arizona.edu')].index)
+            drop_index = []
+            for ia in self.admin_filter:
+                drop_index += list(accounts_df[accounts_df['email'].str.contains(ia)].index)
 
             accounts_df = accounts_df.drop(drop_index).reset_index(drop=True)
         return accounts_df
@@ -189,7 +199,7 @@ class FigshareInstituteAdmin:
         """
 
         # Retrieve accounts
-        accounts_df = self.get_account_list(ignore_admin=ignore_admin)
+        accounts_df = self.get_account_list()
 
         n_accounts = accounts_df.shape[0]
 
