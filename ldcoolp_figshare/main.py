@@ -1,43 +1,29 @@
-from figshare.figshare import issue_request
+from typing import Tuple
+from requests.exceptions import HTTPError
 
 import pandas as pd
 import numpy as np
 
+from logging import Logger
 from redata.commons.logger import log_stdout
+from redata.commons.issue_request import redata_request
 
 
 class FigshareInstituteAdmin:
     """
-    Purpose:
-      A Python interface for administration of institutional Figshare accounts
+    A Python interface for administration and data curation
+    with institutional Figshare instances
 
-    :param figshare_dict: Dict that contains Figshare configuration.
+    :param figshare_dict: Contains Figshare configuration
       This should include:
-        - api_token
-        - stage bool
-
-      Default: config_default_dict from config/default.ini
-
-    Attributes
-    ----------
-    dict : dict
-      Figshare configuration dictionary
-
-    baseurl : str
-      Base URL of the Figshare v2 API
-
-    baseurl_institute : str
-      Base URL of the Figshare v2 API for private institutions
-
-    token : str
-      The Figshare OAuth2 authentication token
-
-    stage : bool
-      Set to use API endpoint of stage instead of production
-      Default: False (i.e., use production)
-
-    headers : dict
-      HTTP header information
+        - api_token: str
+        - stage: bool
+    :param log: Logger object for stdout and file logging. Default: stdout
+    :ivar dict : Dictionary that contains Figshare configuration
+    :ivar baseurl: Base URL of Figshare API
+    :ivar baseurl_institute: Base URL of Figshare API for institutions
+    :ivar token: Figshare OAuth2 authentication token
+    :ivar headers: HTTP header information
 
     Methods
     -------
@@ -95,7 +81,7 @@ class FigshareInstituteAdmin:
       See: https://docs.figshare.com/#private_article_reserve_doi
     """
 
-    def __init__(self, figshare_dict, log=None):
+    def __init__(self, figshare_dict: dict, log: Logger = log_stdout()):
         self.dict = figshare_dict
         if not self.dict['stage']:
             self.baseurl = "https://api.figshare.com/v2/account/"
@@ -109,74 +95,71 @@ class FigshareInstituteAdmin:
         if self.token:
             self.headers['Authorization'] = f'token {self.token}'
 
-        if isinstance(log, type(None)):
-            self.log = log_stdout()
-        else:
-            self.log = log
+        self.log = log
 
-    def endpoint(self, link, institute=True):
+    def endpoint(self, link: str, institute: bool = True) -> str:
         """Concatenate the endpoint to the baseurl"""
         if institute:
             return self.baseurl_institute + link
         else:
             return self.baseurl + link
 
-    def get_articles(self):
+    def get_articles(self) -> pd.DataFrame:
         """Retrieve information about articles within institutional instance"""
         url = self.endpoint("articles")
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000}
-        articles = issue_request('GET', url, self.headers, params=params)
+        articles = redata_request('GET', url, self.headers, params=params)
 
         articles_df = pd.DataFrame(articles)
         return articles_df
 
-    def get_user_articles(self, account_id):
+    def get_user_articles(self, account_id: int) -> pd.DataFrame:
         url = self.endpoint("articles", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
-        user_articles = issue_request('GET', url, self.headers, params=params)
+        user_articles = redata_request('GET', url, self.headers, params=params)
 
         user_articles_df = pd.DataFrame(user_articles)
         return user_articles_df
 
-    def get_user_projects(self, account_id):
+    def get_user_projects(self, account_id: int) -> pd.DataFrame:
         url = self.endpoint("projects", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
-        user_projects = issue_request('GET', url, self.headers, params=params)
+        user_projects = redata_request('GET', url, self.headers, params=params)
 
         user_projects_df = pd.DataFrame(user_projects)
         return user_projects_df
 
-    def get_user_collections(self, account_id):
+    def get_user_collections(self, account_id: int) -> pd.DataFrame:
         url = self.endpoint("collections", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
-        user_collections = issue_request('GET', url, self.headers, params=params)
+        user_collections = redata_request('GET', url, self.headers, params=params)
 
         user_collections_df = pd.DataFrame(user_collections)
         return user_collections_df
 
-    def get_groups(self):
+    def get_groups(self) -> pd.DataFrame:
         """Retrieve information about groups within institutional instance"""
         url = self.endpoint("groups")
-        groups = issue_request('GET', url, self.headers)
+        groups = redata_request('GET', url, self.headers)
 
         groups_df = pd.DataFrame(groups)
         return groups_df
 
-    def get_account_list(self, ignore_admin=False):
+    def get_account_list(self, ignore_admin: bool = False) -> pd.DataFrame:
         """Retrieve accounts within institutional instance"""
         url = self.endpoint("accounts")
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000}
-        accounts = issue_request('GET', url, self.headers, params=params)
+        accounts = redata_request('GET', url, self.headers, params=params)
 
         accounts_df = pd.DataFrame(accounts)
         accounts_df = accounts_df.drop(columns='institution_id')
@@ -191,14 +174,15 @@ class FigshareInstituteAdmin:
             accounts_df = accounts_df.drop(drop_index).reset_index(drop=True)
         return accounts_df
 
-    def get_account_group_roles(self, account_id):
+    def get_account_group_roles(self, account_id: int) -> dict:
         """Retrieve group roles for a given account"""
         url = self.endpoint(f"roles/{account_id}")
 
-        roles = issue_request('GET', url, self.headers)
+        roles = redata_request('GET', url, self.headers)
         return roles
 
-    def get_account_details(self, flag=True, ignore_admin=False):
+    def get_account_details(self, flag: bool = True,
+                            ignore_admin: bool = False) -> pd.DataFrame:
         """
         Retrieve account details. This includes number of articles, projects,
         collections, group association, and administrative and reviewer flags
@@ -228,20 +212,20 @@ class FigshareInstituteAdmin:
             try:
                 articles_df = self.get_user_articles(account_id)
                 num_articles[n] = articles_df.shape[0]
-            except Exception:
-                self.log.warn(f"Unable to retrieve articles for : {account_id}")
+            except HTTPError:
+                self.log.warning(f"Unable to retrieve articles for : {account_id}")
 
             try:
                 projects_df = self.get_user_projects(account_id)
                 num_projects[n] = projects_df.shape[0]
-            except Exception:
-                self.log.warn(f"Unable to retrieve projects for : {account_id}")
+            except HTTPError:
+                self.log.warning(f"Unable to retrieve projects for : {account_id}")
 
             try:
                 collections_df = self.get_user_collections(account_id)
                 num_collections[n] = collections_df.shape[0]
-            except Exception:
-                self.log.warn(f"Unable to retrieve collections for : {account_id}")
+            except HTTPError:
+                self.log.warning(f"Unable to retrieve collections for : {account_id}")
 
             for key in roles.keys():
                 for t_dict in roles[key]:
@@ -270,43 +254,44 @@ class FigshareInstituteAdmin:
 
         return accounts_df
 
-    def get_curation_list(self, article_id=None):
+    def get_curation_list(self, article_id: int = None) -> pd.DataFrame:
         """Retrieve list of curation"""
 
         url = self.endpoint("reviews")
 
         params = {'offset': 0, 'limit': 1000}
-        if not isinstance(article_id, type(None)):
+        if article_id is not None:
             params['article_id'] = article_id
 
-        curation_list = issue_request('GET', url, self.headers, params=params)
+        curation_list = redata_request('GET', url, self.headers,
+                                       params=params)
 
         curation_df = pd.DataFrame(curation_list)
         return curation_df
 
-    def get_curation_details(self, curation_id):
+    def get_curation_details(self, curation_id: int) -> dict:
         """Retrieve details about a specified curation item"""
 
         url = self.endpoint(f"review/{curation_id}")
 
-        curation_details = issue_request('GET', url, self.headers)
+        curation_details = redata_request('GET', url, self.headers)
 
         return curation_details
 
-    def get_curation_comments(self, curation_id):
+    def get_curation_comments(self, curation_id: int) -> dict:
         """Retrieve comments about specified curation item"""
 
         url = self.endpoint(f"review/{curation_id}/comments")
 
-        curation_comments = issue_request('GET', url, self.headers)
+        curation_comments = redata_request('GET', url, self.headers)
 
         return curation_comments
 
-    def doi_check(self, article_id):
+    def doi_check(self, article_id: int) -> Tuple[bool, str]:
         """Check if DOI is present/reserved"""
         url = self.endpoint(f"articles/{article_id}", institute=False)
 
-        article_details = issue_request('GET', url, self.headers)
+        article_details = redata_request('GET', url, self.headers)
 
         check = False
         if article_details['doi']:
@@ -314,7 +299,7 @@ class FigshareInstituteAdmin:
 
         return check, article_details['doi']
 
-    def reserve_doi(self, article_id):
+    def reserve_doi(self, article_id: int) -> str:
         """Reserve DOI if one has not been reserved"""
 
         url = self.endpoint(f"articles/{article_id}/reserve_doi", institute=False)
@@ -332,9 +317,9 @@ class FigshareInstituteAdmin:
             self.log.info(f"RESPONSE: {src_input}")
             if src_input.lower() == 'yes':
                 self.log.info("Reserving DOI ... ")
-                response = issue_request('POST', url, self.headers)
+                response = redata_request('POST', url, self.headers)
                 self.log.info(f"DOI minted : {response['doi']}")
                 return response['doi']
             else:
-                self.log.warn("Skipping... ")
+                self.log.warning("Skipping... ")
                 return doi_string
