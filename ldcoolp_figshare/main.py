@@ -14,87 +14,46 @@ class FigshareInstituteAdmin:
     A Python interface for administration and data curation
     with institutional Figshare instances
 
-    :param figshare_dict: Contains Figshare configuration
-      This should include:
-        - api_token: str
-        - stage: bool
+    Most methods take a ``article_id`` or ``curation_id`` input
+
+    :param token: Figshare OAuth2 authentication token
+    :param stage: Flag to either use Figshare stage or prod API
+    :param admin_filter: List of filters to remove admin accounts from user list
     :param log: Logger object for stdout and file logging. Default: stdout
-    :ivar dict : Dictionary that contains Figshare configuration
+
+    :ivar token: Figshare OAuth2 authentication token
+    :ivar stage: Flag to either use Figshare stage or prod API
     :ivar baseurl: Base URL of Figshare API
     :ivar baseurl_institute: Base URL of Figshare API for institutions
     :ivar token: Figshare OAuth2 authentication token
     :ivar headers: HTTP header information
-
-    Methods
-    -------
-    endpoint(link)
-      Concatenate the endpoint to the baseurl
-
-    get_articles()
-      Return pandas DataFrame of institutional articles
-      See: https://docs.figshare.com/#private_institution_articles
-
-    get_user_articles(account_id)
-      Impersonate a user to retrieve articles associated with the user
-      See: https://docs.figshare.com/#private_articles_list
-
-    get_user_projects(account_id)
-      Impersonate a user to retrieve projects associated with the user
-      See: https://docs.figshare.com/#private_projects_list
-
-    get_user_collections(account_id)
-      Impersonate a user to retrieve collections associated with the user
-      See: https://docs.figshare.com/#private_collections_list
-
-    get_groups()
-      Return pandas DataFrame of an institution's groups
-      See: https://docs.figshare.com/#private_institution_groups_list
-
-    get_account_list()
-      Return pandas DataFrame of user accounts
-      See: https://docs.figshare.com/#private_institution_accounts_list
-
-    get_account_group_roles(account_id)
-      Return dict containing group roles for a given account
-      See: https://docs.figshare.com/#private_institution_account_group_roles
-
-    get_account_details()
-      Return pandas DataFrame that contains user information and their
-      institutional and group roles
-
-    get_curation_list()
-      Return pandas DataFrame of datasets under curatorial review
-      See: https://docs.figshare.com/#account_institution_curations
-
-    get_curation_details(curation_id)
-      Return dict containing curatorial details of a dataset
-
-    get_curation_comments(curation_id)
-      Return list containing curatorial comments of a dataset
-      See: https://docs.figshare.com/#account_institution_curation_comments
-
-    doi_check(article_id)
-      Check if DOI is present/reserved
-
-    reserve_doi(article_id)
-      Reserve a DOI if one has not been reserved
-      See: https://docs.figshare.com/#private_article_reserve_doi
+    :ivar admin_filter: List of filters to remove admin accounts from user list
+    :ivar ignore_admin: Flags whether to remove admin accounts from user list
     """
 
-    def __init__(self, figshare_dict: dict, log: Logger = log_stdout()):
-        self.dict = figshare_dict
-        if not self.dict['stage']:
+    def __init__(self, token: str, stage: bool = False,
+                 admin_filter: list = None,
+                 log: Logger = log_stdout()):
+
+        self.token = token
+        self.stage = stage
+
+        if not self.stage:
             self.baseurl = "https://api.figshare.com/v2/account/"
         else:
             self.baseurl = "https://api.figsh.com/v2/account/"
 
         self.baseurl_institute = self.baseurl + "institution/"
-        self.token = self.dict['api_token']
 
         self.headers = {'Content-Type': 'application/json'}
         if self.token:
             self.headers['Authorization'] = f'token {self.token}'
 
+        self.admin_filter = admin_filter
+        if admin_filter is not None:
+            self.ignore_admin = True
+        else:
+            self.ignore_admin = False
         self.log = log
 
     def endpoint(self, link: str, institute: bool = True) -> str:
@@ -105,10 +64,15 @@ class FigshareInstituteAdmin:
             return self.baseurl + link
 
     def get_articles(self) -> pd.DataFrame:
-        """Retrieve information about articles within institutional instance"""
+        """
+        Retrieve information about all articles within institutional instance
+        See: https://docs.figshare.com/#private_institution_articles
+        """
+
         url = self.endpoint("articles")
 
         # Figshare API is limited to a maximum of 1000 per page
+        # Full pagination still needed
         params = {'page': 1, 'page_size': 1000}
         articles = redata_request('GET', url, self.headers, params=params)
 
@@ -116,6 +80,12 @@ class FigshareInstituteAdmin:
         return articles_df
 
     def get_user_articles(self, account_id: int) -> pd.DataFrame:
+        """
+        Impersonate a user, ``account_id`, to retrieve articles
+        associated with the user.
+        See: https://docs.figshare.com/#private_articles_list
+        """
+
         url = self.endpoint("articles", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -126,6 +96,12 @@ class FigshareInstituteAdmin:
         return user_articles_df
 
     def get_user_projects(self, account_id: int) -> pd.DataFrame:
+        """
+        Impersonate a user, ``account_id`, to retrieve projects
+        associated with the user.
+        See: https://docs.figshare.com/#private_projects_list
+        """
+
         url = self.endpoint("projects", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -136,6 +112,12 @@ class FigshareInstituteAdmin:
         return user_projects_df
 
     def get_user_collections(self, account_id: int) -> pd.DataFrame:
+        """
+        Impersonate a user, ``account_id``, to retrieve collections
+        associated with the user.
+        See: https://docs.figshare.com/#private_collections_list
+        """
+
         url = self.endpoint("collections", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -146,15 +128,23 @@ class FigshareInstituteAdmin:
         return user_collections_df
 
     def get_groups(self) -> pd.DataFrame:
-        """Retrieve information about groups within institutional instance"""
+        """
+        Retrieve information about groups within institutional instance.
+        See: https://docs.figshare.com/#private_institution_groups_list
+        """
+
         url = self.endpoint("groups")
         groups = redata_request('GET', url, self.headers)
 
         groups_df = pd.DataFrame(groups)
         return groups_df
 
-    def get_account_list(self, ignore_admin: bool = False) -> pd.DataFrame:
-        """Retrieve accounts within institutional instance"""
+    def get_account_list(self) -> pd.DataFrame:
+        """
+        Return pandas DataFrame of user accounts.
+        See: https://docs.figshare.com/#private_institution_accounts_list
+        """
+
         url = self.endpoint("accounts")
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -164,41 +154,45 @@ class FigshareInstituteAdmin:
         accounts_df = pd.DataFrame(accounts)
         accounts_df = accounts_df.drop(columns='institution_id')
 
-        if ignore_admin:
+        if self.ignore_admin:
             self.log.info("Excluding administrative and test accounts")
 
-            drop_index = list(accounts_df[accounts_df['email'] ==
-                                          'data-management@email.arizona.edu'].index)
-            drop_index += list(accounts_df[accounts_df['email'].str.contains('-test@email.arizona.edu')].index)
+            drop_index = []
+            for ia in self.admin_filter:
+                drop_index += list(accounts_df[accounts_df['email'].str.contains(ia)].index)
 
-            accounts_df = accounts_df.drop(drop_index).reset_index(drop=True)
+            if len(drop_index) > 0:
+                accounts_df = accounts_df.drop(drop_index).reset_index(drop=True)
         return accounts_df
 
     def get_account_group_roles(self, account_id: int) -> dict:
-        """Retrieve group roles for a given account"""
+        """
+        Retrieve group roles for a given account, ``account_id``.
+        See: https://docs.figshare.com/#private_institution_account_group_roles
+        """
+
         url = self.endpoint(f"roles/{account_id}")
 
         roles = redata_request('GET', url, self.headers)
         return roles
 
-    def get_account_details(self, flag: bool = True,
-                            ignore_admin: bool = False) -> pd.DataFrame:
+    def get_account_details(self, flag: bool = True) -> pd.DataFrame:
         """
         Retrieve account details. This includes number of articles, projects,
         collections, group association, and administrative and reviewer flags
         """
 
         # Retrieve accounts
-        accounts_df = self.get_account_list(ignore_admin=ignore_admin)
+        accounts_df = self.get_account_list()
 
         n_accounts = accounts_df.shape[0]
 
         # Retrieve groups
         groups_df = self.get_groups()
 
-        num_articles = np.zeros(n_accounts, dtype=np.int)
-        num_projects = np.zeros(n_accounts, dtype=np.int)
-        num_collections = np.zeros(n_accounts, dtype=np.int)
+        num_articles = np.zeros(n_accounts, dtype=np.intc)
+        num_projects = np.zeros(n_accounts, dtype=np.intc)
+        num_collections = np.zeros(n_accounts, dtype=np.intc)
 
         if flag:
             admin_flag = [''] * n_accounts
@@ -213,19 +207,25 @@ class FigshareInstituteAdmin:
                 articles_df = self.get_user_articles(account_id)
                 num_articles[n] = articles_df.shape[0]
             except HTTPError:
-                self.log.warning(f"Unable to retrieve articles for : {account_id}")
+                self.log.warning(
+                    f"Unable to retrieve articles for : {account_id}"
+                )
 
             try:
                 projects_df = self.get_user_projects(account_id)
                 num_projects[n] = projects_df.shape[0]
             except HTTPError:
-                self.log.warning(f"Unable to retrieve projects for : {account_id}")
+                self.log.warning(
+                    f"Unable to retrieve projects for : {account_id}"
+                )
 
             try:
                 collections_df = self.get_user_collections(account_id)
                 num_collections[n] = collections_df.shape[0]
             except HTTPError:
-                self.log.warning(f"Unable to retrieve collections for : {account_id}")
+                self.log.warning(
+                    f"Unable to retrieve collections for : {account_id}"
+                )
 
             for key in roles.keys():
                 for t_dict in roles[key]:
@@ -251,11 +251,14 @@ class FigshareInstituteAdmin:
                            sub in group_assoc]
 
         accounts_df['Group'] = group_assoc
-
         return accounts_df
 
     def get_curation_list(self, article_id: int = None) -> pd.DataFrame:
-        """Retrieve list of curation"""
+        """
+        Retrieve list of curation records for ``article_id``.
+        If not specified, all curation records are retrieved.
+        See: https://docs.figshare.com/#account_institution_curations
+        """
 
         url = self.endpoint("reviews")
 
@@ -270,25 +273,32 @@ class FigshareInstituteAdmin:
         return curation_df
 
     def get_curation_details(self, curation_id: int) -> dict:
-        """Retrieve details about a specified curation item"""
+        """
+        Retrieve details about a specified curation, ``curation_id``.
+        See: https://docs.figshare.com/#account_institution_curation
+        """
 
         url = self.endpoint(f"review/{curation_id}")
 
         curation_details = redata_request('GET', url, self.headers)
-
         return curation_details
 
     def get_curation_comments(self, curation_id: int) -> dict:
-        """Retrieve comments about specified curation item"""
+        """
+        Retrieve comments about specified curation, ``curation_id`.
+        See: https://docs.figshare.com/#account_institution_curation_comments
+        """
 
         url = self.endpoint(f"review/{curation_id}/comments")
 
         curation_comments = redata_request('GET', url, self.headers)
-
         return curation_comments
 
     def doi_check(self, article_id: int) -> Tuple[bool, str]:
-        """Check if DOI is present/reserved"""
+        """
+        Check if DOI is present/reserved for ``article_id``.
+        Uses: https://docs.figshare.com/#private_article_details
+        """
         url = self.endpoint(f"articles/{article_id}", institute=False)
 
         article_details = redata_request('GET', url, self.headers)
@@ -300,20 +310,27 @@ class FigshareInstituteAdmin:
         return check, article_details['doi']
 
     def reserve_doi(self, article_id: int) -> str:
-        """Reserve DOI if one has not been reserved"""
+        """
+        Reserve DOI if one has not been reserved for ``article_id``.
+        See: https://docs.figshare.com/#private_article_reserve_doi
+        """
 
-        url = self.endpoint(f"articles/{article_id}/reserve_doi", institute=False)
+        url = self.endpoint(f"articles/{article_id}/reserve_doi",
+                            institute=False)
 
         # Check if DOI has been reserved
         doi_check, doi_string = self.doi_check(article_id)
 
         if doi_check:
             self.log.info("DOI already reserved! Skipping... ")
-
             return doi_string
         else:
-            self.log.info("PROMPT: DOI reservation has not occurred! Do you wish to reserve?")
-            src_input = input("PROMPT: Type 'Yes'/'yes'. Anything else will skip : ")
+            self.log.info(
+                "PROMPT: DOI reservation has not occurred! Do you wish to reserve?"
+            )
+            src_input = input(
+                "PROMPT: Type 'Yes'/'yes'. Anything else will skip : "
+            )
             self.log.info(f"RESPONSE: {src_input}")
             if src_input.lower() == 'yes':
                 self.log.info("Reserving DOI ... ")
