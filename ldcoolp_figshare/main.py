@@ -14,13 +14,13 @@ class FigshareInstituteAdmin:
     A Python interface for administration and data curation
     with institutional Figshare instances
 
-    :param figshare_dict: Contains Figshare configuration
-      This should include:
-        - api_token: str
-        - stage: bool
+    :param token: Figshare OAuth2 authentication token
+    :param stage: Flag to either use Figshare stage or prod API
     :param admin_filter: List of filters to remove admin accounts from user list
     :param log: Logger object for stdout and file logging. Default: stdout
-    :ivar dict : Dictionary that contains Figshare configuration
+
+    :ivar token: Figshare OAuth2 authentication token
+    :ivar stage: Flag to either use Figshare stage or prod API
     :ivar baseurl: Base URL of Figshare API
     :ivar baseurl_institute: Base URL of Figshare API for institutions
     :ivar token: Figshare OAuth2 authentication token
@@ -29,17 +29,19 @@ class FigshareInstituteAdmin:
     :ivar ignore_admin: Flags whether to remove admin accounts from user list
     """
 
-    def __init__(self, figshare_dict: dict,
+    def __init__(self, token: str, stage: bool = False,
                  admin_filter: list = None,
                  log: Logger = log_stdout()):
-        self.dict = figshare_dict
-        if not self.dict['stage']:
+
+        self.token = token
+        self.stage = stage
+
+        if not self.stage:
             self.baseurl = "https://api.figshare.com/v2/account/"
         else:
             self.baseurl = "https://api.figsh.com/v2/account/"
 
         self.baseurl_institute = self.baseurl + "institution/"
-        self.token = self.dict['api_token']
 
         self.headers = {'Content-Type': 'application/json'}
         if self.token:
