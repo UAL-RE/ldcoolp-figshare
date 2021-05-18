@@ -155,7 +155,8 @@ class FigshareInstituteAdmin:
             for ia in self.admin_filter:
                 drop_index += list(accounts_df[accounts_df['email'].str.contains(ia)].index)
 
-            accounts_df = accounts_df.drop(drop_index).reset_index(drop=True)
+            if len(drop_index) > 0:
+                accounts_df = accounts_df.drop(drop_index).reset_index(drop=True)
         return accounts_df
 
     def get_account_group_roles(self, account_id: int) -> dict:
