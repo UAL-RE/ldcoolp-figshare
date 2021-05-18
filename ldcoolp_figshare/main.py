@@ -27,61 +27,6 @@ class FigshareInstituteAdmin:
     :ivar headers: HTTP header information
     :ivar admin_filter: List of filters to remove admin accounts from user list
     :ivar ignore_admin: Flags whether to remove admin accounts from user list
-
-    Methods
-    -------
-    endpoint(link)
-      Concatenate the endpoint to the baseurl
-
-    get_articles()
-      Return pandas DataFrame of institutional articles
-      See: https://docs.figshare.com/#private_institution_articles
-
-    get_user_articles(account_id)
-      Impersonate a user to retrieve articles associated with the user
-      See: https://docs.figshare.com/#private_articles_list
-
-    get_user_projects(account_id)
-      Impersonate a user to retrieve projects associated with the user
-      See: https://docs.figshare.com/#private_projects_list
-
-    get_user_collections(account_id)
-      Impersonate a user to retrieve collections associated with the user
-      See: https://docs.figshare.com/#private_collections_list
-
-    get_groups()
-      Return pandas DataFrame of an institution's groups
-      See: https://docs.figshare.com/#private_institution_groups_list
-
-    get_account_list()
-      Return pandas DataFrame of user accounts
-      See: https://docs.figshare.com/#private_institution_accounts_list
-
-    get_account_group_roles(account_id)
-      Return dict containing group roles for a given account
-      See: https://docs.figshare.com/#private_institution_account_group_roles
-
-    get_account_details()
-      Return pandas DataFrame that contains user information and their
-      institutional and group roles
-
-    get_curation_list()
-      Return pandas DataFrame of datasets under curatorial review
-      See: https://docs.figshare.com/#account_institution_curations
-
-    get_curation_details(curation_id)
-      Return dict containing curatorial details of a dataset
-
-    get_curation_comments(curation_id)
-      Return list containing curatorial comments of a dataset
-      See: https://docs.figshare.com/#account_institution_curation_comments
-
-    doi_check(article_id)
-      Check if DOI is present/reserved
-
-    reserve_doi(article_id)
-      Reserve a DOI if one has not been reserved
-      See: https://docs.figshare.com/#private_article_reserve_doi
     """
 
     def __init__(self, figshare_dict: dict,
@@ -115,7 +60,11 @@ class FigshareInstituteAdmin:
             return self.baseurl + link
 
     def get_articles(self) -> pd.DataFrame:
-        """Retrieve information about articles within institutional instance"""
+        """
+        Retrieve information about articles within institutional instance
+        See: https://docs.figshare.com/#private_institution_articles
+        """
+
         url = self.endpoint("articles")
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -126,6 +75,11 @@ class FigshareInstituteAdmin:
         return articles_df
 
     def get_user_articles(self, account_id: int) -> pd.DataFrame:
+        """
+        Impersonate a user to retrieve articles associated with the user
+        See: https://docs.figshare.com/#private_articles_list
+        """
+
         url = self.endpoint("articles", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -136,6 +90,11 @@ class FigshareInstituteAdmin:
         return user_articles_df
 
     def get_user_projects(self, account_id: int) -> pd.DataFrame:
+        """
+        Impersonate a user to retrieve projects associated with the user
+        See: https://docs.figshare.com/#private_projects_list
+        """
+
         url = self.endpoint("projects", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -146,6 +105,11 @@ class FigshareInstituteAdmin:
         return user_projects_df
 
     def get_user_collections(self, account_id: int) -> pd.DataFrame:
+        """
+        Impersonate a user to retrieve collections associated with the user
+        See: https://docs.figshare.com/#private_collections_list
+        """
+
         url = self.endpoint("collections", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -156,7 +120,11 @@ class FigshareInstituteAdmin:
         return user_collections_df
 
     def get_groups(self) -> pd.DataFrame:
-        """Retrieve information about groups within institutional instance"""
+        """
+        Retrieve information about groups within institutional instance
+        See: https://docs.figshare.com/#private_institution_groups_list
+        """
+
         url = self.endpoint("groups")
         groups = redata_request('GET', url, self.headers)
 
@@ -164,7 +132,11 @@ class FigshareInstituteAdmin:
         return groups_df
 
     def get_account_list(self) -> pd.DataFrame:
-        """Retrieve accounts within institutional instance"""
+        """
+        Return pandas DataFrame of user accounts
+        See: https://docs.figshare.com/#private_institution_accounts_list
+        """
+
         url = self.endpoint("accounts")
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -185,14 +157,17 @@ class FigshareInstituteAdmin:
         return accounts_df
 
     def get_account_group_roles(self, account_id: int) -> dict:
-        """Retrieve group roles for a given account"""
+        """
+        Retrieve group roles for a given account
+        See: https://docs.figshare.com/#private_institution_account_group_roles
+        """
+
         url = self.endpoint(f"roles/{account_id}")
 
         roles = redata_request('GET', url, self.headers)
         return roles
 
-    def get_account_details(self, flag: bool = True,
-                            ignore_admin: bool = False) -> pd.DataFrame:
+    def get_account_details(self, flag: bool = True) -> pd.DataFrame:
         """
         Retrieve account details. This includes number of articles, projects,
         collections, group association, and administrative and reviewer flags
@@ -261,11 +236,13 @@ class FigshareInstituteAdmin:
                            sub in group_assoc]
 
         accounts_df['Group'] = group_assoc
-
         return accounts_df
 
     def get_curation_list(self, article_id: int = None) -> pd.DataFrame:
-        """Retrieve list of curation"""
+        """
+        Retrieve list of curation
+        See: https://docs.figshare.com/#account_institution_curations
+        """
 
         url = self.endpoint("reviews")
 
@@ -280,25 +257,32 @@ class FigshareInstituteAdmin:
         return curation_df
 
     def get_curation_details(self, curation_id: int) -> dict:
-        """Retrieve details about a specified curation item"""
+        """
+        Retrieve details about a specified curation item
+        https://docs.figshare.com/#account_institution_curation
+        """
 
         url = self.endpoint(f"review/{curation_id}")
 
         curation_details = redata_request('GET', url, self.headers)
-
         return curation_details
 
     def get_curation_comments(self, curation_id: int) -> dict:
-        """Retrieve comments about specified curation item"""
+        """
+        Retrieve comments about specified curation item
+        See: https://docs.figshare.com/#account_institution_curation_comments
+        """
 
         url = self.endpoint(f"review/{curation_id}/comments")
 
         curation_comments = redata_request('GET', url, self.headers)
-
         return curation_comments
 
     def doi_check(self, article_id: int) -> Tuple[bool, str]:
-        """Check if DOI is present/reserved"""
+        """
+        Check if DOI is present/reserved
+        Uses: https://docs.figshare.com/#private_article_details
+        """
         url = self.endpoint(f"articles/{article_id}", institute=False)
 
         article_details = redata_request('GET', url, self.headers)
@@ -310,7 +294,10 @@ class FigshareInstituteAdmin:
         return check, article_details['doi']
 
     def reserve_doi(self, article_id: int) -> str:
-        """Reserve DOI if one has not been reserved"""
+        """
+        Reserve DOI if one has not been reserved
+        See: https://docs.figshare.com/#private_article_reserve_doi
+        """
 
         url = self.endpoint(f"articles/{article_id}/reserve_doi", institute=False)
 
@@ -319,7 +306,6 @@ class FigshareInstituteAdmin:
 
         if doi_check:
             self.log.info("DOI already reserved! Skipping... ")
-
             return doi_string
         else:
             self.log.info("PROMPT: DOI reservation has not occurred! Do you wish to reserve?")
