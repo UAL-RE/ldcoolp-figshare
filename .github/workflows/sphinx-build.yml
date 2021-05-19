@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout redata-commons
+    - name: Checkout ldcoolp-figshare
       uses: actions/checkout@v2
     - name: Sphinx build
       uses: ammaraskar/sphinx-action@master
