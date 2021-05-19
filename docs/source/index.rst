@@ -29,6 +29,7 @@ instance can use.
    versioning
    authors
    license
+   modules
 
 .. |GitHub top language| image:: https://img.shields.io/github/languages/top/UAL-ODIS/ldcoolp-figshare
 .. |GitHub release (latest by date)| image:: https://img.shields.io/github/v/release/UAL-ODIS/ldcoolp-figshare
