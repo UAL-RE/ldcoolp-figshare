@@ -14,7 +14,7 @@ class FigshareInstituteAdmin:
     A Python interface for administration and data curation
     with institutional Figshare instances
 
-    Most methods take a ``article_id`` or ``curation_id`` input
+    Most methods take an ``article_id`` or ``curation_id`` input
 
     :param token: Figshare OAuth2 authentication token
     :param stage: Flag to either use Figshare stage or production API. Default: production
@@ -56,7 +56,13 @@ class FigshareInstituteAdmin:
         self.log = log
 
     def endpoint(self, link: str, institute: bool = True) -> str:
-        """Concatenate the endpoint to the baseurl for ``requests``"""
+        """Concatenate the endpoint to the baseurl for ``requests``
+
+        :param link: API endpoint to append to baseurl
+        :param institute: Flag to use regular of institute baseurl
+
+        :return: URL for HTTPS API
+        """
         if institute:
             return self.baseurl_institute + link
         else:
@@ -67,6 +73,8 @@ class FigshareInstituteAdmin:
         Retrieve information about all articles within institutional instance
 
         See: https://docs.figshare.com/#private_institution_articles
+
+        :return: Relational database of all articles for an institution
         """
 
         url = self.endpoint("articles")
@@ -85,6 +93,10 @@ class FigshareInstituteAdmin:
         associated with the user.
 
         See: https://docs.figshare.com/#private_articles_list
+
+        :param account_id: Figshare account ID
+
+        :return: Relational database of all articles owned by user
         """
 
         url = self.endpoint("articles", institute=False)
@@ -102,6 +114,10 @@ class FigshareInstituteAdmin:
         associated with the user.
 
         See: https://docs.figshare.com/#private_projects_list
+
+        :param account_id: Figshare account ID
+
+        :return: Relational database of all projects owned by user
         """
 
         url = self.endpoint("projects", institute=False)
@@ -119,6 +135,10 @@ class FigshareInstituteAdmin:
         associated with the user.
 
         See: https://docs.figshare.com/#private_collections_list
+
+        :param account_id: Figshare account ID
+
+        :return: Relational database of all collections owned by user
         """
 
         url = self.endpoint("collections", institute=False)
@@ -135,6 +155,8 @@ class FigshareInstituteAdmin:
         Retrieve information about groups within institutional instance.
 
         See: https://docs.figshare.com/#private_institution_groups_list
+
+        :return: Relational database of all Figshare groups for an institution
         """
 
         url = self.endpoint("groups")
@@ -148,6 +170,8 @@ class FigshareInstituteAdmin:
         Return pandas DataFrame of user accounts.
 
         See: https://docs.figshare.com/#private_institution_accounts_list
+
+        :return: Relational database of all user accounts for an institution
         """
 
         url = self.endpoint("accounts")
@@ -175,6 +199,10 @@ class FigshareInstituteAdmin:
         Retrieve group roles for a given account, ``account_id``.
 
         See: https://docs.figshare.com/#private_institution_account_group_roles
+
+        :param account_id: Figshare account ID
+
+        :return: Python dictionary of all group roles for a user
         """
 
         url = self.endpoint(f"roles/{account_id}")
@@ -184,8 +212,13 @@ class FigshareInstituteAdmin:
 
     def get_account_details(self, flag: bool = True) -> pd.DataFrame:
         """
-        Retrieve account details. This includes number of articles, projects,
-        collections, group association, and administrative and reviewer flags
+        Retrieve account details. This includes group association, number of
+        articles, projects, and collections, and administrative and reviewer
+        role flags
+
+        :param flag: Populate administrative and reviewer roles to database
+
+        :return: Relational database of details of all accounts for an institution
         """
 
         # Retrieve accounts
@@ -265,6 +298,10 @@ class FigshareInstituteAdmin:
         If not specified, all curation records are retrieved.
 
         See: https://docs.figshare.com/#account_institution_curations
+
+        :param article_id: Figshare article ID
+
+        :return: Relational database of all curation records
         """
 
         url = self.endpoint("reviews")
@@ -284,6 +321,10 @@ class FigshareInstituteAdmin:
         Retrieve details about a specified curation, ``curation_id``.
 
         See: https://docs.figshare.com/#account_institution_curation
+
+        :param curation_id: Figshare curation ID
+
+        :return: Python dictionary with curation metadata
         """
 
         url = self.endpoint(f"review/{curation_id}")
@@ -296,6 +337,10 @@ class FigshareInstituteAdmin:
         Retrieve comments about specified curation, ``curation_id``.
 
         See: https://docs.figshare.com/#account_institution_curation_comments
+
+        :param curation_id: Figshare curation ID
+
+        :return: Python dictionary with curation comments
         """
 
         url = self.endpoint(f"review/{curation_id}/comments")
@@ -308,6 +353,10 @@ class FigshareInstituteAdmin:
         Check if DOI is present/reserved for ``article_id``.
 
         Uses: https://docs.figshare.com/#private_article_details
+
+        :param article_id: Figshare article ID
+
+        :return: Flag to indicate whether DOI is reserved and DOI (empty string if not)
         """
         url = self.endpoint(f"articles/{article_id}", institute=False)
 
@@ -322,7 +371,12 @@ class FigshareInstituteAdmin:
     def reserve_doi(self, article_id: int) -> str:
         """
         Reserve DOI if one has not been reserved for ``article_id``.
+
         See: https://docs.figshare.com/#private_article_reserve_doi
+
+        :param article_id: Figshare article ID
+
+        :return: DOI string
         """
 
         url = self.endpoint(f"articles/{article_id}/reserve_doi",
