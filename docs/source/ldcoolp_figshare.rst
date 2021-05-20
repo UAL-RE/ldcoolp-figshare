@@ -4,8 +4,8 @@ ldcoolp-figshare package
 .. toctree::
    :maxdepth: 4
 
-Primary Class
--------------
+The ``FigshareInstituteAdmin`` Class
+------------------------------------
 
 .. autoclass:: ldcoolp_figshare.FigshareInstituteAdmin
    :members:
