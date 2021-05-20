@@ -6,7 +6,16 @@
 Welcome to :repo:`ldcoolp-figshare <>` documentation!
 =====================================================
 
-|GitHub top language| |GitHub release (latest by date)| |GitHub|
++------------+--------------------------------------------+
+| Categories | Status                                     |
++============+============================================+
+| General    | |GitHub top language|                      |
+|            | |GitHub release (latest by date)| |GitHub| |
++------------+--------------------------------------------+
+| CI/CD      | Under construction                         |
++------------+--------------------------------------------+
+| Docs       | |docs| |Read the Docs|                     |
++------------+------------------------------+-------------+
 
 --------------
 
@@ -33,7 +42,12 @@ instance can use.
 
 .. |GitHub top language| image:: https://img.shields.io/github/languages/top/UAL-ODIS/ldcoolp-figshare
 .. |GitHub release (latest by date)| image:: https://img.shields.io/github/v/release/UAL-ODIS/ldcoolp-figshare
+   :target: https://github.com/UAL-ODIS/ldcoolp-figshare/releases
 .. |GitHub| image:: https://img.shields.io/github/license/UAL-ODIS/ldcoolp-figshare?color=blue
+   :target: LICENSE
+.. |docs| image:: https://img.shields.io/github/workflow/status/UAL-ODIS/ldcoolp-figshare/Sphinx%20Docs%20Check?label=sphinx%20docs
+   :target: https://github.com/UAL-ODIS/ldcoolp-figshare/actions?query=workflow%3A%22Sphinx+Docs+Check%22
+.. |Read the Docs| image:: https://img.shields.io/readthedocs/ldcoolp-figshare?label=RTDs
 
 .. _LD-Cool-P: https://github.com/UAL-ODIS/LD_Cool_P
 .. _Figshare API: https://api.figshare.com
