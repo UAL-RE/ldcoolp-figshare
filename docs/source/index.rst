@@ -24,7 +24,7 @@ instance can use.
    :caption: Contents:
 
    getting_started
-   execution
+   use_examples
    ci
    versioning
    authors
