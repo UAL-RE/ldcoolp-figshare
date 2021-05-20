@@ -17,7 +17,7 @@ class FigshareInstituteAdmin:
     Most methods take a ``article_id`` or ``curation_id`` input
 
     :param token: Figshare OAuth2 authentication token
-    :param stage: Flag to either use Figshare stage or prod API
+    :param stage: Flag to either use Figshare stage or production API. Default: production
     :param admin_filter: List of filters to remove admin accounts from user list
     :param log: Logger object for stdout and file logging. Default: stdout
 
@@ -25,7 +25,6 @@ class FigshareInstituteAdmin:
     :ivar stage: Flag to either use Figshare stage or prod API
     :ivar baseurl: Base URL of Figshare API
     :ivar baseurl_institute: Base URL of Figshare API for institutions
-    :ivar token: Figshare OAuth2 authentication token
     :ivar headers: HTTP header information
     :ivar admin_filter: List of filters to remove admin accounts from user list
     :ivar ignore_admin: Flags whether to remove admin accounts from user list
@@ -57,7 +56,7 @@ class FigshareInstituteAdmin:
         self.log = log
 
     def endpoint(self, link: str, institute: bool = True) -> str:
-        """Concatenate the endpoint to the baseurl"""
+        """Concatenate the endpoint to the baseurl for ``requests``"""
         if institute:
             return self.baseurl_institute + link
         else:
@@ -66,6 +65,7 @@ class FigshareInstituteAdmin:
     def get_articles(self) -> pd.DataFrame:
         """
         Retrieve information about all articles within institutional instance
+
         See: https://docs.figshare.com/#private_institution_articles
         """
 
@@ -81,8 +81,9 @@ class FigshareInstituteAdmin:
 
     def get_user_articles(self, account_id: int) -> pd.DataFrame:
         """
-        Impersonate a user, ``account_id`, to retrieve articles
+        Impersonate a user, ``account_id``, to retrieve articles
         associated with the user.
+
         See: https://docs.figshare.com/#private_articles_list
         """
 
@@ -97,8 +98,9 @@ class FigshareInstituteAdmin:
 
     def get_user_projects(self, account_id: int) -> pd.DataFrame:
         """
-        Impersonate a user, ``account_id`, to retrieve projects
+        Impersonate a user, ``account_id``, to retrieve projects
         associated with the user.
+
         See: https://docs.figshare.com/#private_projects_list
         """
 
@@ -115,6 +117,7 @@ class FigshareInstituteAdmin:
         """
         Impersonate a user, ``account_id``, to retrieve collections
         associated with the user.
+
         See: https://docs.figshare.com/#private_collections_list
         """
 
@@ -130,6 +133,7 @@ class FigshareInstituteAdmin:
     def get_groups(self) -> pd.DataFrame:
         """
         Retrieve information about groups within institutional instance.
+
         See: https://docs.figshare.com/#private_institution_groups_list
         """
 
@@ -142,6 +146,7 @@ class FigshareInstituteAdmin:
     def get_account_list(self) -> pd.DataFrame:
         """
         Return pandas DataFrame of user accounts.
+
         See: https://docs.figshare.com/#private_institution_accounts_list
         """
 
@@ -168,6 +173,7 @@ class FigshareInstituteAdmin:
     def get_account_group_roles(self, account_id: int) -> dict:
         """
         Retrieve group roles for a given account, ``account_id``.
+
         See: https://docs.figshare.com/#private_institution_account_group_roles
         """
 
@@ -257,6 +263,7 @@ class FigshareInstituteAdmin:
         """
         Retrieve list of curation records for ``article_id``.
         If not specified, all curation records are retrieved.
+
         See: https://docs.figshare.com/#account_institution_curations
         """
 
@@ -275,6 +282,7 @@ class FigshareInstituteAdmin:
     def get_curation_details(self, curation_id: int) -> dict:
         """
         Retrieve details about a specified curation, ``curation_id``.
+
         See: https://docs.figshare.com/#account_institution_curation
         """
 
@@ -285,7 +293,8 @@ class FigshareInstituteAdmin:
 
     def get_curation_comments(self, curation_id: int) -> dict:
         """
-        Retrieve comments about specified curation, ``curation_id`.
+        Retrieve comments about specified curation, ``curation_id``.
+
         See: https://docs.figshare.com/#account_institution_curation_comments
         """
 
@@ -297,6 +306,7 @@ class FigshareInstituteAdmin:
     def doi_check(self, article_id: int) -> Tuple[bool, str]:
         """
         Check if DOI is present/reserved for ``article_id``.
+
         Uses: https://docs.figshare.com/#private_article_details
         """
         url = self.endpoint(f"articles/{article_id}", institute=False)
