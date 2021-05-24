@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as fr:
 
 setup(
     name='ldcoolp-figshare',
-    version='0.2.0',
+    version='0.2.1',
     packages=find_namespace_packages(),
     url='https://github.com/UAL-ODIS/ldcoolp-figshare/',
     project_urls={
@@ -19,7 +19,7 @@ setup(
     license='MIT License',
     author='Chun Ly',
     author_email='astro.chun@gmail.com',
-    description='Python tool using the Figshare API for data curation=',
+    description='Python tool using the Figshare API for data curation',
     long_description=long_description,
     long_description_content_type='text/markdown',
     python_requires='>=3.7',
