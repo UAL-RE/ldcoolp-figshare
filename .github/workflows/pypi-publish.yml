@@ -1,0 +1,41 @@
+# This workflow checkouts code and publishes to PyPI at:
+# https://pypi.org/project/ldcoolp-figshare/
+# Some syntax from:
+# https://github.com/FootBrawlers/robosoft/blob/f06cfcd8443b33eb258e59a054c7d210fa896dad/.github/workflows/pypi-release.yml
+
+name: Publish to PyPI
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*'  # Push events to matching v*
+
+jobs:
+  package-n-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: Install PyPI dependencies
+      run: |
+        python -m pip install --user --upgrade setuptools wheel
+    - name: Build
+      run: |
+        python setup.py sdist bdist_wheel
+    - name: Publish to Test PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.TEST_PYPI_TOKEN }}
+        repository_url: https://test.pypi.org/legacy/
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_TOKEN }}

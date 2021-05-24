@@ -4,6 +4,7 @@
 | ---        | ---    |
 | General    | ![GitHub top language](https://img.shields.io/github/languages/top/UAL-ODIS/ldcoolp-figshare) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/UAL-ODIS/ldcoolp-figshare)](https://github.com/UAL-ODIS/ldcoolp-figshare/releases) [![GitHub](https://img.shields.io/github/license/UAL-ODIS/ldcoolp-figshare?color=blue)](LICENSE) |
 | CI/CD      | Under construction | 
+| PyPI       | ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ldcoolp-figshare) ![PyPI](https://img.shields.io/pypi/v/ldcoolp-figshare) ![PyPI - Downloads](https://img.shields.io/pypi/dm/voxcharta-my-voting-record?color=blue) | 
 | Docs       | [![docs](https://img.shields.io/github/workflow/status/UAL-ODIS/ldcoolp-figshare/Sphinx%20Docs%20Check?label=sphinx%20docs)](https://github.com/UAL-ODIS/ldcoolp-figshare/actions?query=workflow%3A%22Sphinx+Docs+Check%22) [![Read the Docs](https://img.shields.io/readthedocs/ldcoolp-figshare?label=RTDs)](https://readthedocs.org/projects/ldcoolp-figshare/builds) |
 
 Our complete Sphinx documentation is available

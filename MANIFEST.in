@@ -1,0 +1,7 @@
+include README.md
+include CHANGELOG.md
+include LICENSE
+include requirements.txt
+recursive-exclude docs *
+recursive-exclude tests *
+recursive-exclude venv *
