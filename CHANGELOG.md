@@ -1,12 +1,14 @@
 # Changelog
 
-## [UNRELEASED](https://github.com/UAL-ODIS/ldcoolp-figshare/tree/HEAD)
+## [v0.2.0](https://github.com/UAL-ODIS/ldcoolp-figshare/tree/HEAD) (2021-05-24)
 
 **Implemented enhancements:**
- - `______` [#XX](http://github.com/UAL-ODIS/ldcoolp-figshare/pull/XX)
+ - Prepare code for PyPI packaging; Add CHANGELOG [#15](http://github.com/UAL-ODIS/ldcoolp-figshare/pull/15)
 
 **Closed issues:**
  - Update README.md with RTDs information and links [#12](http://github.com/UAL-ODIS/ldcoolp-figshare/issues/12)
+ - Prepare code for PyPI packaging [#4](http://github.com/UAL-ODIS/ldcoolp-figshare/issues/4)
+ - Add CHANGELOG [#14](http://github.com/UAL-ODIS/ldcoolp-figshare/issues/14)
 
 **Merged pull requests:**
  - Update README.md with RTDs information and links [#13](http://github.com/UAL-ODIS/ldcoolp-figshare/pull/13)
