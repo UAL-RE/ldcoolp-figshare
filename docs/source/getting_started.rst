@@ -4,8 +4,8 @@ Getting Started
 You will need Python. We recommend v3.9. This code will be tested with
 v3.7, v3.8, and v3.9.
 
-This code will be published as ``ldcoolp-figshare`` on PyPI. Thus, the
-simplest installation will be:
+This code is published as ``ldcoolp-figshare`` on :pypi:`PyPI <>`. Thus, the
+simplest installation is:
 
 ::
 
