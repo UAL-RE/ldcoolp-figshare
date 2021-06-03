@@ -1,5 +1,14 @@
 # Changelog
 
+## [UNRELEASED](https://github.com/UAL-ODIS/ldcoolp-figshare/tree/HEAD) (YYYY-MM-DD)
+
+**Implemented enhancements:**
+ - For get_curation_list method, allow for pending selection [#21](http://github.com/UAL-ODIS/ldcoolp-figshare/pull/21)
+
+**Closed issues:**
+ - For get_curation_list method, allow for pending selection [#19](http://github.com/UAL-ODIS/ldcoolp-figshare/issues/19)
+
+
 ## [v0.2.0](https://github.com/UAL-ODIS/ldcoolp-figshare/tree/HEAD) (2021-05-24)
 
 **Implemented enhancements:**
