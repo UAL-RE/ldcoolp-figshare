@@ -6,8 +6,6 @@
 Welcome to :repo:`ldcoolp-figshare <>` documentation!
 =====================================================
 
---------------
-
 Overview
 --------
 
