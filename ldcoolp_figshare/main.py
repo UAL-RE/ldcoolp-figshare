@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 from requests.exceptions import HTTPError
 
 import pandas as pd
@@ -292,7 +292,8 @@ class FigshareInstituteAdmin:
         accounts_df['Group'] = group_assoc
         return accounts_df
 
-    def get_curation_list(self, article_id: int = None) -> pd.DataFrame:
+    def get_curation_list(self, article_id: int = None, status: Optional[str] = "") \
+            -> pd.DataFrame:
         """
         Retrieve list of curation records for ``article_id``.
         If not specified, all curation records are retrieved.
@@ -300,15 +301,23 @@ class FigshareInstituteAdmin:
         See: https://docs.figshare.com/#account_institution_curations
 
         :param article_id: Figshare article ID
+        :param status: Filter by status of review. Options are:
+               ['', 'pending', 'approved', 'rejected', 'closed']
 
         :return: Relational database of all curation records
         """
+        status_list = ['', 'pending', 'approved', 'rejected', 'closed']
+        if status not in status_list:
+            raise ValueError(f"Incorrect status input. Most be one of {status_list}")
 
         url = self.endpoint("reviews")
 
         params = {'offset': 0, 'limit': 1000}
         if article_id is not None:
             params['article_id'] = article_id
+
+        if status:
+            params['status'] = status
 
         curation_list = redata_request('GET', url, self.headers,
                                        params=params)
