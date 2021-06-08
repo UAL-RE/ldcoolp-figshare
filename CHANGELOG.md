@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.3.0](https://github.com/UAL-ODIS/ldcoolp-figshare/tree/v0.3.0) (2021-06-08)
+
+**Implemented enhancements:**
+ -  Update use of redata.commons to include process option [#24](http://github.com/UAL-ODIS/ldcoolp-figshare/pull/24)
+
+**Closed issues:**
+ -  Update use of redata.commons to include process option [#23](http://github.com/UAL-ODIS/ldcoolp-figshare/issues/23)
+
+
 ## [v0.2.2](https://github.com/UAL-ODIS/ldcoolp-figshare/tree/v0.2.2) (2021-06-03)
 
 **Implemented enhancements:**

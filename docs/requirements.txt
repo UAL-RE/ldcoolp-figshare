@@ -1,4 +1,4 @@
-redata>=0.4.0
+redata>=0.4.1
 
 sphinx>=4.0
 sphinx-rtd-theme==0.5.2
