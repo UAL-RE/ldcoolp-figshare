@@ -1,4 +1,6 @@
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Union
+
+from requests import Response
 from requests.exceptions import HTTPError
 
 import pandas as pd
@@ -68,13 +70,18 @@ class FigshareInstituteAdmin:
         else:
             return self.baseurl + link
 
-    def get_articles(self) -> pd.DataFrame:
+    def get_articles(self, process: bool = True) -> \
+            Union[pd.DataFrame, Response]:
         """
         Retrieve information about all articles within institutional instance
 
         See: https://docs.figshare.com/#private_institution_articles
 
-        :return: Relational database of all articles for an institution
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
+
+        :return: Relational database of all articles for an institution or
+                 the full ``requests.Response``
         """
 
         url = self.endpoint("articles")
@@ -82,12 +89,17 @@ class FigshareInstituteAdmin:
         # Figshare API is limited to a maximum of 1000 per page
         # Full pagination still needed
         params = {'page': 1, 'page_size': 1000}
-        articles = redata_request('GET', url, self.headers, params=params)
+        articles = redata_request('GET', url, self.headers, params=params,
+                                  process=process)
 
-        articles_df = pd.DataFrame(articles)
-        return articles_df
+        if process:
+            articles_df = pd.DataFrame(articles)
+            return articles_df
+        else:
+            return articles
 
-    def get_user_articles(self, account_id: int) -> pd.DataFrame:
+    def get_user_articles(self, account_id: int, process: bool = True) \
+            -> Union[pd.DataFrame, Response]:
         """
         Impersonate a user, ``account_id``, to retrieve articles
         associated with the user.
@@ -95,20 +107,28 @@ class FigshareInstituteAdmin:
         See: https://docs.figshare.com/#private_articles_list
 
         :param account_id: Figshare account ID
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
 
-        :return: Relational database of all articles owned by user
+        :return: Relational database of all articles owned by user or
+                 the full ``requests.Response``
         """
 
         url = self.endpoint("articles", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
-        user_articles = redata_request('GET', url, self.headers, params=params)
+        user_articles = redata_request('GET', url, self.headers,
+                                       params=params, process=process)
 
-        user_articles_df = pd.DataFrame(user_articles)
-        return user_articles_df
+        if process:
+            user_articles_df = pd.DataFrame(user_articles)
+            return user_articles_df
+        else:
+            return user_articles
 
-    def get_user_projects(self, account_id: int) -> pd.DataFrame:
+    def get_user_projects(self, account_id: int, process: bool = True) \
+            -> Union[pd.DataFrame, Response]:
         """
         Impersonate a user, ``account_id``, to retrieve projects
         associated with the user.
@@ -116,20 +136,28 @@ class FigshareInstituteAdmin:
         See: https://docs.figshare.com/#private_projects_list
 
         :param account_id: Figshare account ID
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
 
-        :return: Relational database of all projects owned by user
+        :return: Relational database of all projects owned by user or
+                 the full ``requests.Response``
         """
 
         url = self.endpoint("projects", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
-        user_projects = redata_request('GET', url, self.headers, params=params)
+        user_projects = redata_request('GET', url, self.headers,
+                                       params=params, process=process)
 
-        user_projects_df = pd.DataFrame(user_projects)
-        return user_projects_df
+        if process:
+            user_projects_df = pd.DataFrame(user_projects)
+            return user_projects_df
+        else:
+            return user_projects
 
-    def get_user_collections(self, account_id: int) -> pd.DataFrame:
+    def get_user_collections(self, account_id: int, process: bool = True) \
+            -> Union[pd.DataFrame, Response]:
         """
         Impersonate a user, ``account_id``, to retrieve collections
         associated with the user.
@@ -137,77 +165,105 @@ class FigshareInstituteAdmin:
         See: https://docs.figshare.com/#private_collections_list
 
         :param account_id: Figshare account ID
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
 
-        :return: Relational database of all collections owned by user
+        :return: Relational database of all collections owned by user or
+                 the full ``requests.Response``
         """
 
         url = self.endpoint("collections", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
-        user_collections = redata_request('GET', url, self.headers, params=params)
+        user_collections = redata_request('GET', url, self.headers,
+                                          params=params, process=process)
 
-        user_collections_df = pd.DataFrame(user_collections)
-        return user_collections_df
+        if process:
+            user_collections_df = pd.DataFrame(user_collections)
+            return user_collections_df
+        else:
+            return user_collections
 
-    def get_groups(self) -> pd.DataFrame:
+    def get_groups(self, process: bool = True) -> \
+            Union[pd.DataFrame, Response]:
         """
         Retrieve information about groups within institutional instance.
 
         See: https://docs.figshare.com/#private_institution_groups_list
 
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
+
         :return: Relational database of all Figshare groups for an institution
+                 or the full ``requests.Response``
         """
 
         url = self.endpoint("groups")
-        groups = redata_request('GET', url, self.headers)
+        groups = redata_request('GET', url, self.headers, process=process)
 
-        groups_df = pd.DataFrame(groups)
-        return groups_df
+        if process:
+            groups_df = pd.DataFrame(groups)
+            return groups_df
+        else:
+            return groups
 
-    def get_account_list(self) -> pd.DataFrame:
+    def get_account_list(self, process: bool = True) -> \
+            Union[pd.DataFrame, Response]:
         """
         Return pandas DataFrame of user accounts.
 
         See: https://docs.figshare.com/#private_institution_accounts_list
 
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
+
         :return: Relational database of all user accounts for an institution
+                 or the full ``requests.Response``
         """
 
         url = self.endpoint("accounts")
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000}
-        accounts = redata_request('GET', url, self.headers, params=params)
+        accounts = redata_request('GET', url, self.headers,
+                                  params=params, process=process)
 
-        accounts_df = pd.DataFrame(accounts)
-        accounts_df = accounts_df.drop(columns='institution_id')
+        if process:
+            accounts_df = pd.DataFrame(accounts)
+            accounts_df = accounts_df.drop(columns='institution_id')
 
-        if self.ignore_admin:
-            self.log.info("Excluding administrative and test accounts")
+            if self.ignore_admin:
+                self.log.info("Excluding administrative and test accounts")
 
-            drop_index = []
-            for ia in self.admin_filter:
-                drop_index += list(accounts_df[accounts_df['email'].str.contains(ia)].index)
+                drop_index = []
+                for ia in self.admin_filter:
+                    drop_index += list(accounts_df[accounts_df['email'].str.contains(ia)].index)
 
-            if len(drop_index) > 0:
-                accounts_df = accounts_df.drop(drop_index).reset_index(drop=True)
-        return accounts_df
+                if len(drop_index) > 0:
+                    accounts_df = accounts_df.drop(drop_index).reset_index(drop=True)
+            return accounts_df
+        else:
+            return accounts
 
-    def get_account_group_roles(self, account_id: int) -> dict:
+    def get_account_group_roles(self, account_id: int, process: bool = True) \
+            -> Union[dict, Response]:
         """
         Retrieve group roles for a given account, ``account_id``.
 
         See: https://docs.figshare.com/#private_institution_account_group_roles
 
         :param account_id: Figshare account ID
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
 
-        :return: Python dictionary of all group roles for a user
+        :return: Python dictionary of all group roles for a user or
+                 the full ``requests.Response``
         """
 
         url = self.endpoint(f"roles/{account_id}")
 
-        roles = redata_request('GET', url, self.headers)
+        roles = redata_request('GET', url, self.headers, process=process)
         return roles
 
     def get_account_details(self, flag: bool = True) -> pd.DataFrame:
@@ -292,8 +348,9 @@ class FigshareInstituteAdmin:
         accounts_df['Group'] = group_assoc
         return accounts_df
 
-    def get_curation_list(self, article_id: int = None, status: Optional[str] = "") \
-            -> pd.DataFrame:
+    def get_curation_list(self, article_id: int = None,
+                          status: Optional[str] = "", process: bool = True) \
+            -> Union[pd.DataFrame, Response]:
         """
         Retrieve list of curation records for ``article_id``.
         If not specified, all curation records are retrieved.
@@ -303,8 +360,11 @@ class FigshareInstituteAdmin:
         :param article_id: Figshare article ID
         :param status: Filter by status of review. Options are:
                ['', 'pending', 'approved', 'rejected', 'closed']
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
 
-        :return: Relational database of all curation records
+        :return: Relational database of all curation records or
+                 the full ``requests.Response``
         """
         status_list = ['', 'pending', 'approved', 'rejected', 'closed']
         if status not in status_list:
@@ -320,62 +380,83 @@ class FigshareInstituteAdmin:
             params['status'] = status
 
         curation_list = redata_request('GET', url, self.headers,
-                                       params=params)
+                                       params=params, process=process)
 
-        curation_df = pd.DataFrame(curation_list)
-        return curation_df
+        if process:
+            curation_df = pd.DataFrame(curation_list)
+            return curation_df
+        else:
+            return curation_list
 
-    def get_curation_details(self, curation_id: int) -> dict:
+    def get_curation_details(self, curation_id: int, process: bool = True) \
+            -> Union[dict, Response]:
         """
         Retrieve details about a specified curation, ``curation_id``.
 
         See: https://docs.figshare.com/#account_institution_curation
 
         :param curation_id: Figshare curation ID
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
 
-        :return: Python dictionary with curation metadata
+        :return: Python dictionary with curation metadata or
+                 the full ``requests.Response``
         """
 
         url = self.endpoint(f"review/{curation_id}")
 
-        curation_details = redata_request('GET', url, self.headers)
+        curation_details = redata_request('GET', url, self.headers,
+                                          process=process)
         return curation_details
 
-    def get_curation_comments(self, curation_id: int) -> dict:
+    def get_curation_comments(self, curation_id: int, process: bool = True) \
+            -> Union[dict, Response]:
         """
         Retrieve comments about specified curation, ``curation_id``.
 
         See: https://docs.figshare.com/#account_institution_curation_comments
 
         :param curation_id: Figshare curation ID
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
 
-        :return: Python dictionary with curation comments
+        :return: Python dictionary with curation comments or
+                 the full ``requests.Response``
         """
 
         url = self.endpoint(f"review/{curation_id}/comments")
 
-        curation_comments = redata_request('GET', url, self.headers)
+        curation_comments = redata_request('GET', url, self.headers,
+                                           process=process)
         return curation_comments
 
-    def doi_check(self, article_id: int) -> Tuple[bool, str]:
+    def doi_check(self, article_id: int, process: bool = True) -> \
+            Union[Tuple[bool, str], Response]:
         """
         Check if DOI is present/reserved for ``article_id``.
 
         Uses: https://docs.figshare.com/#private_article_details
 
         :param article_id: Figshare article ID
+        :param process: Returns JSON content from ``redata_request``, otherwise
+                        the full request is provided. Default: True
 
-        :return: Flag to indicate whether DOI is reserved and DOI (empty string if not)
+        :return: Flag to indicate whether DOI is reserved and DOI (empty string if not).
+                 Returns the full ``requests.Response`` if ``process=False``
         """
         url = self.endpoint(f"articles/{article_id}", institute=False)
 
-        article_details = redata_request('GET', url, self.headers)
+        article_details = redata_request('GET', url, self.headers,
+                                         process=process)
 
-        check = False
-        if article_details['doi']:
-            check = True
+        if process:
+            check = False
+            if article_details['doi']:
+                check = True
 
-        return check, article_details['doi']
+            return check, article_details['doi']
+        else:
+            return article_details
 
     def reserve_doi(self, article_id: int) -> str:
         """
