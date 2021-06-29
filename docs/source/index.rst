@@ -27,7 +27,7 @@ instance can use.
    license
    modules
 
-.. _LD-Cool-P: https://github.com/UAL-RE/LD_Cool_P
+.. _LD-Cool-P: https://github.com/UAL-RE/LD-Cool-P
 .. _Figshare API: https://api.figshare.com
 .. _ReDATA: https://arizona.figshare.com
 .. _Figshare for Institution: https://knowledge.figshare.com/institutions

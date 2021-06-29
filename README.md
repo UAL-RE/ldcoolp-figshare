@@ -11,7 +11,7 @@ Our complete Sphinx documentation is available
 [here](https://ldcoolp-figshare.readthedocs.io) at ReadTheDocs.io.
 
 `ldcoolp-figshare` is a command-line API used in
-[`LD-Cool-P`](https://github.com/UAL-RE/LD_Cool_P) to interact with the
+[`LD-Cool-P`](https://github.com/UAL-RE/LD-Cool-P) to interact with the
 [Figshare API](https://api.figshare.com). It is used by
 [ReDATA](https://arizona.figshare.com) data curators for the curation of
 submitted research data products. This codebase is generalized such that
