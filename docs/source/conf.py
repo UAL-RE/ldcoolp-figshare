@@ -64,7 +64,7 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 # -- External links for repeated use:
-repo_link = 'https://github.com/UAL-ODIS/ldcoolp-figshare'
+repo_link = 'https://github.com/UAL-RE/ldcoolp-figshare'
 extlinks = {
     'repo': (f"{repo_link}/%s", None),
     'repo-main-file': (f"{repo_link}/blob/main/%s", None),

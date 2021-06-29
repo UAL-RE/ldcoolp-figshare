@@ -9,4 +9,4 @@ See also the list of :repo:`contributors <contributors>` who participated in thi
 
 .. _@astrochun: http://www.github.com/astrochun
 .. _University of Arizona Libraries: https://github.com/ualibraries
-.. _Office of Digital Innovation and Stewardship: https://github.com/UAL-ODIS
+.. _Office of Digital Innovation and Stewardship: https://github.com/UAL-RE
