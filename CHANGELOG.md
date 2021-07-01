@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.3.1](https://github.com/UAL-RE/ldcoolp-figshare/tree/v0.3.1) (2021-07-01)
+
+**Merged pull requests:**
+ - Org rename [#25](https://github.com/UAL-RE/ldcoolp-figshare/pull/25)
+
+
 ## [v0.3.0](https://github.com/UAL-RE/ldcoolp-figshare/tree/v0.3.0) (2021-06-08)
 
 **Implemented enhancements:**
