@@ -8,13 +8,13 @@ with open("requirements.txt", "r") as fr:
 
 setup(
     name='ldcoolp-figshare',
-    version='0.3.0',
+    version='0.3.1',
     packages=find_namespace_packages(),
-    url='https://github.com/UAL-ODIS/ldcoolp-figshare/',
+    url='https://github.com/UAL-RE/ldcoolp-figshare/',
     project_urls={
-        'Source': 'https://github.com/UAL-ODIS/ldcoolp-figshare/',
+        'Source': 'https://github.com/UAL-RE/ldcoolp-figshare/',
         'Documentation': 'https://ldcoolp-figshare.readthedocs.io/',
-        'Tracker': 'https://github.com/UAL-ODIS/ldcoolp-figshare/issues',
+        'Tracker': 'https://github.com/UAL-RE/ldcoolp-figshare/issues',
     },
     license='MIT License',
     author='Chun Ly',

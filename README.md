@@ -2,16 +2,16 @@
 
 | Categories | Status |
 | ---        | ---    |
-| General    | ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ldcoolp-figshare) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/UAL-ODIS/ldcoolp-figshare)](https://github.com/UAL-ODIS/ldcoolp-figshare/releases) [![GitHub](https://img.shields.io/github/license/UAL-ODIS/ldcoolp-figshare?color=blue)](LICENSE) |
+| General    | ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ldcoolp-figshare) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/UAL-RE/ldcoolp-figshare)](https://github.com/UAL-RE/ldcoolp-figshare/releases) [![GitHub](https://img.shields.io/github/license/UAL-RE/ldcoolp-figshare?color=blue)](LICENSE) |
 | CI/CD      | Under construction | 
 | PyPI       |  [![PyPI](https://img.shields.io/pypi/v/ldcoolp-figshare?color=blue)](https://pypi.org/project/ldcoolp-figshare/) ![PyPI - Weekly Downloads](https://img.shields.io/pypi/dw/ldcoolp-figshare?color=blue) ![PyPI - Monthly Downloads](https://img.shields.io/pypi/dm/ldcoolp-figshare?color=blue) | 
-| Docs       | [![docs](https://img.shields.io/github/workflow/status/UAL-ODIS/ldcoolp-figshare/Sphinx%20Docs%20Check?label=sphinx%20docs)](https://github.com/UAL-ODIS/ldcoolp-figshare/actions?query=workflow%3A%22Sphinx+Docs+Check%22) [![Read the Docs](https://img.shields.io/readthedocs/ldcoolp-figshare?label=RTDs)](https://readthedocs.org/projects/ldcoolp-figshare/builds) |
+| Docs       | [![docs](https://img.shields.io/github/workflow/status/UAL-RE/ldcoolp-figshare/Sphinx%20Docs%20Check?label=sphinx%20docs)](https://github.com/UAL-RE/ldcoolp-figshare/actions?query=workflow%3A%22Sphinx+Docs+Check%22) [![Read the Docs](https://img.shields.io/readthedocs/ldcoolp-figshare?label=RTDs)](https://readthedocs.org/projects/ldcoolp-figshare/builds) |
 
 Our complete Sphinx documentation is available
 [here](https://ldcoolp-figshare.readthedocs.io) at ReadTheDocs.io.
 
 `ldcoolp-figshare` is a command-line API used in
-[`LD-Cool-P`](https://github.com/UAL-ODIS/LD_Cool_P) to interact with the
+[`LD-Cool-P`](https://github.com/UAL-RE/LD-Cool-P) to interact with the
 [Figshare API](https://api.figshare.com). It is used by
 [ReDATA](https://arizona.figshare.com) data curators for the curation of
 submitted research data products. This codebase is generalized such that

@@ -24,7 +24,7 @@ copyright = '2021, Arizona Board of Regents'
 author = 'Chun Ly, UA Research Data Repository (ReDATA) Team'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.3.0'
+release = 'v0.3.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -64,7 +64,7 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 # -- External links for repeated use:
-repo_link = 'https://github.com/UAL-ODIS/ldcoolp-figshare'
+repo_link = 'https://github.com/UAL-RE/ldcoolp-figshare'
 extlinks = {
     'repo': (f"{repo_link}/%s", None),
     'repo-main-file': (f"{repo_link}/blob/main/%s", None),
