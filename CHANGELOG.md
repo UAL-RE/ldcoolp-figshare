@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.3.2](https://github.com/UAL-RE/ldcoolp-figshare/tree/v0.3.2) (2021-07-07)
+
+**Implemented enhancements:**
+ - Add method to retrieve ORCID and Figshare account ID for users
+   [#27](https://github.com/UAL-RE/ldcoolp-figshare/pull/27)
+
+**Closed issues:**
+ - Add method to retrieve ORCID and Figshare account ID for users
+   [#26](https://github.com/UAL-RE/ldcoolp-figshare/issues/26)
+
+
 ## [v0.3.1](https://github.com/UAL-RE/ldcoolp-figshare/tree/v0.3.1) (2021-07-01)
 
 **Merged pull requests:**
