@@ -106,7 +106,7 @@ class FigshareInstituteAdmin:
 
         See: https://docs.figshare.com/#private_articles_list
 
-        :param account_id: Figshare account ID
+        :param account_id: Figshare *institute* account ID
         :param process: Returns JSON content from ``redata_request``, otherwise
                         the full request is provided. Default: True
 
@@ -135,7 +135,7 @@ class FigshareInstituteAdmin:
 
         See: https://docs.figshare.com/#private_projects_list
 
-        :param account_id: Figshare account ID
+        :param account_id: Figshare *institute* account ID
         :param process: Returns JSON content from ``redata_request``, otherwise
                         the full request is provided. Default: True
 
@@ -164,7 +164,7 @@ class FigshareInstituteAdmin:
 
         See: https://docs.figshare.com/#private_collections_list
 
-        :param account_id: Figshare account ID
+        :param account_id: Figshare *institute* account ID
         :param process: Returns JSON content from ``redata_request``, otherwise
                         the full request is provided. Default: True
 
@@ -253,7 +253,7 @@ class FigshareInstituteAdmin:
 
         See: https://docs.figshare.com/#private_institution_account_group_roles
 
-        :param account_id: Figshare account ID
+        :param account_id: Figshare *institute* account ID
         :param process: Returns JSON content from ``redata_request``, otherwise
                         the full request is provided. Default: True
 
