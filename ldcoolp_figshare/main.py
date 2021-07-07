@@ -289,6 +289,9 @@ class FigshareInstituteAdmin:
         num_projects = np.zeros(n_accounts, dtype=np.intc)
         num_collections = np.zeros(n_accounts, dtype=np.intc)
 
+        orcid_num = [''] * n_accounts
+        user_id = np.zeros(n_accounts, dtype=np.intc)  # This is the Figshare user ID
+
         if flag:
             admin_flag = [''] * n_accounts
             reviewer_flag = [''] * n_accounts
@@ -296,6 +299,11 @@ class FigshareInstituteAdmin:
 
         # Determine group roles for each account
         for n, account_id in zip(range(n_accounts), accounts_df['id']):
+            # Save ORCID and account ID
+            other_account_dict = self.get_other_account_details(account_id)
+            orcid_num[n] = other_account_dict['orcid_id']
+            user_id[n] = other_account_dict['id']
+
             roles = self.get_account_group_roles(account_id)
 
             try:
@@ -336,6 +344,9 @@ class FigshareInstituteAdmin:
         accounts_df['Projects'] = num_projects
         accounts_df['Collections'] = num_collections
 
+        accounts_df['ORCID'] = orcid_num
+        accounts_df['user_id'] = user_id
+
         if flag:
             accounts_df['Admin'] = admin_flag
             accounts_df['Reviewer'] = reviewer_flag
@@ -347,6 +358,23 @@ class FigshareInstituteAdmin:
 
         accounts_df['Group'] = group_assoc
         return accounts_df
+
+    def get_other_account_details(self, account_id: int) -> dict:
+        """
+        Retrieve ORCID and Figshare account information (among other metadata)
+
+        See: https://docs.figshare.com/#private_account_institution_user
+
+        :param account_id: Figshare *institute* account ID
+
+        :return: Dictionary with full account details
+        """
+
+        url = self.endpoint(f"users/{account_id}", institute=True)
+
+        other_account_dict = redata_request('GET', url, self.headers)
+
+        return other_account_dict
 
     def get_curation_list(self, article_id: int = None,
                           status: Optional[str] = "", process: bool = True) \
