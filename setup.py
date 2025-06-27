@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as fr:
 
 setup(
     name='ldcoolp-figshare',
-    version='0.3.2',
+    version='0.4.0',
     packages=find_namespace_packages(),
     url='https://github.com/UAL-RE/ldcoolp-figshare/',
     project_urls={
