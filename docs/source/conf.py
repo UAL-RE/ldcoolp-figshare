@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 project = 'ldcoolp-figshare'
 copyright = '2021, Arizona Board of Regents'
-author = 'Chun Ly, UA Research Data Repository (ReDATA) Team'
+author = 'Research Engagement (University of Arizona Libraries)'
 
 # The full version, including alpha/beta/rc tags
 release = 'v0.4.0'
