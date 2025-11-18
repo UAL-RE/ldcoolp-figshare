@@ -2,6 +2,7 @@
 # https://pypi.org/project/ldcoolp-figshare/
 # Some syntax from:
 # https://github.com/FootBrawlers/robosoft/blob/f06cfcd8443b33eb258e59a054c7d210fa896dad/.github/workflows/pypi-release.yml
+# and https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
 
 name: Publish to PyPI
 
@@ -12,30 +13,59 @@ on:
       - 'v*'  # Push events to matching v*
 
 jobs:
-  package-n-publish:
+  package-build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.7
+        python-version: "3.11"
     - name: Install PyPI dependencies
       run: |
         python -m pip install --user --upgrade setuptools wheel
     - name: Build
       run: |
         python setup.py sdist bdist_wheel
+    - name: upload distribution package
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-${{ github.ref_name }}
+        path: dist/
+
+  publish-to-testpypi:
+    needs: [package-build]
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/ldcoolp-figshare/
+    permissions:
+      id-token: write
+    steps:
+    - name: download distribution package
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-${{ github.ref_name }}
+        path: dist/
     - name: Publish to Test PyPI
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@release/v1.13
       with:
-        user: __token__
-        password: ${{ secrets.TEST_PYPI_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
+        repository-url: https://test.pypi.org/legacy/
+
+  publish-to-pypi:
+    needs: [package-build]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/ldcoolp-figshare/
+    permissions:
+      id-token: write
+    steps:
+    - name: download distribution package
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-${{ github.ref_name }}
+        path: dist/
     - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@master
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_TOKEN }}
+      uses: pypa/gh-action-pypi-publish@release/v1.13
