@@ -1,7 +1,7 @@
 Getting Started
 ---------------
 
-You will need Python. We recommend v3.13. This code will be tested with
+You will need Python. We recommend v3.11 or greater. This code will be tested with
 v3.11, v3.12, and v3.13.
 
 This code is published as ``ldcoolp-figshare`` on :pypi:`PyPI <>`. Thus, the
