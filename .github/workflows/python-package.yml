@@ -50,4 +50,4 @@ jobs:
         python -m pip list
     - name: Test with pytest
       run: |
-        pytest --cov-report term-missing --cov-config=.coveragerc --cov=redata tests
+        pytest --cov-report term-missing --cov-config=.coveragerc --cov=ldcoolp-figshare tests

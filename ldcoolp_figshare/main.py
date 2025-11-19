@@ -234,7 +234,7 @@ class FigshareInstituteAdmin:
             accounts_df = accounts_df.drop(columns='institution_id')
 
             if self.ignore_admin:
-                self.log.info("Excluding administrative and test accounts")
+                self.log.info("Excluding administrative and tests accounts")
 
                 drop_index = []
                 for ia in self.admin_filter:
