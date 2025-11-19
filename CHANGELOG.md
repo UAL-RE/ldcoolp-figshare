@@ -1,8 +1,12 @@
 # Changelog
 
-## [v0.4.0](https://github.com/UAL-RE/ldcoolp-figshare/tree/v0.4.0) (2025-11-09)
+## [v0.4.0](https://github.com/UAL-RE/ldcoolp-figshare/tree/v0.4.0) (2025-11-19)
 
-
+**Implemented enhancements:**
+- Add method to retrieve ORCID and Figshare account ID for users by @astrochun in https://github.com/UAL-RE/ldcoolp-figshare/pull/27
+- Add PyCharm settings .idea to .gitignore by @yhan818 in https://github.com/UAL-RE/ldcoolp-figshare/pull/31
+- Feature: Add issue and pr templates by @HafeezOJ in https://github.com/UAL-RE/ldcoolp-figshare/pull/34
+- Update dependencies by @HafeezOJ in https://github.com/UAL-RE/ldcoolp-figshare/pull/35
 
 ## [v0.3.2](https://github.com/UAL-RE/ldcoolp-figshare/tree/v0.3.2) (2021-07-07)
 
